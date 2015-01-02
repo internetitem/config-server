@@ -1,0 +1,14 @@
+/.project
+/.settings/
+/.classpath
+/bin/
+
+/target/
+
+/.idea
+*.iml
+
+*.tmp
+*.log
+*~
+
