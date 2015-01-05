@@ -2,13 +2,12 @@ package com.internetitem.config.server.dao.rdbms;
 
 import com.internetitem.config.server.FileUtility;
 import com.internetitem.config.server.dao.DatabaseAccess;
-import com.internetitem.config.server.dao.rdbms.dataModel.VersionSortComparator;
 import com.internetitem.config.server.dao.rdbms.dataModel.RawComponent;
 import com.internetitem.config.server.dao.rdbms.dataModel.RawSetting;
 import com.internetitem.config.server.dao.rdbms.dataModel.RawTag;
-import com.internetitem.config.server.dataModel.db.*;
+import com.internetitem.config.server.dao.rdbms.dataModel.VersionSortComparator;
 import com.internetitem.config.server.dataModel.web.admin.*;
-import com.internetitem.config.server.exception.*;
+import com.internetitem.config.server.exception.SystemError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,7 +49,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return dbSql;
 	}
 
-	private void runSql(String scriptName) throws Exception {
+	protected void runSql(String scriptName) throws Exception {
 		String sql = loadSql("schema", scriptName);
 
 		for (String query : sql.split(";")) {
@@ -74,12 +73,28 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return 0;
 	}
 
-	private String loadQuery(String name) throws SQLException {
+	protected String loadQuery(String name) throws SQLException {
 		try {
 			return loadSql("query", name);
 		} catch (IOException e) {
 			throw new SQLException("Unable to load " + name + " query: " + e.getMessage(), e);
 		}
+	}
+
+	protected Integer queryForInteger(String query, MapSqlParameterSource params) {
+		List<Integer> l = template.queryForList(query, params, Integer.class);
+		if (l.isEmpty()) {
+			return null;
+		}
+		return l.iterator().next();
+	}
+
+	protected <T> T queryForObject(String query, MapSqlParameterSource params, Class<T> clazz) {
+		List<T> l = template.query(query, params, new BeanPropertyRowMapper<>(clazz));
+		if (l.isEmpty()) {
+			return null;
+		}
+		return l.iterator().next();
 	}
 
 	@Override
@@ -94,7 +109,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		params.addValue("versionId", version == null ? null : Long.valueOf(version.getVersionId()));
 
 		List<RawSetting> settings = template.query(settingsQuery, params, new BeanPropertyRowMapper<>(RawSetting.class));
-		Map<String, List<RawSetting>> settingMap = toMap(settings);
+		Map<String, List<RawSetting>> settingMap = toMapByKey(settings);
 		Collection<List<RawSetting>> valueLists = settingMap.values();
 
 		filterComponents(valueLists);
@@ -104,7 +119,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return buildSettings(application, environment, settingsById, tags);
 	}
 
-	private List<Setting> buildSettings(Application application, Environment environment, Map<Long, RawSetting> settingsById, List<RawTag> tags) {
+	protected List<Setting> buildSettings(Application application, Environment environment, Map<Long, RawSetting> settingsById, List<RawTag> tags) {
 		for (RawTag tag : tags) {
 			Long settingId = Long.valueOf(tag.getSettingId());
 			RawSetting setting = settingsById.get(settingId);
@@ -132,7 +147,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return settings;
 	}
 
-	private Component buildComponent(RawSetting raw) {
+	protected Component buildComponent(RawSetting raw) {
 		String name = raw.getComponentName();
 		if (name == null) {
 			return null;
@@ -144,7 +159,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return c;
 	}
 
-	private Version buildVersion(Long id, String name, Integer order, Application application) {
+	protected Version buildVersion(Long id, String name, Integer order, Application application) {
 		if (id == null) {
 			return null;
 		}
@@ -156,7 +171,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return version;
 	}
 
-	private Map<String, List<RawSetting>> toMap(List<RawSetting> settings) {
+	protected Map<String, List<RawSetting>> toMapByKey(List<RawSetting> settings) {
 		Map<String, List<RawSetting>> map = new HashMap<>();
 		for (RawSetting setting : settings) {
 			String key = setting.getSettingKey().toLowerCase();
@@ -170,7 +185,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return map;
 	}
 
-	private Map<Long, RawSetting> filterDupes(Collection<List<RawSetting>> valueLists) {
+	protected Map<Long, RawSetting> filterDupes(Collection<List<RawSetting>> valueLists) {
 		Map<Long, RawSetting> map = new HashMap<>();
 		for (List<RawSetting> settings : valueLists) {
 			if (settings.size() == 1) {
@@ -184,12 +199,12 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		return map;
 	}
 
-	private RawSetting filterDupes(List<RawSetting> settings) {
+	protected RawSetting filterDupes(List<RawSetting> settings) {
 		settings.sort(Comparator.comparing(RawSetting::getLastModifiedTs).thenComparingLong(RawSetting::getSettingId).reversed());
 		return settings.iterator().next();
 	}
 
-	private void filterComponents(Collection<List<RawSetting>> valueLists) {
+	protected void filterComponents(Collection<List<RawSetting>> valueLists) {
 		for (List<RawSetting> settings : valueLists) {
 			if (settings.size() == 1) {
 				continue;
@@ -198,7 +213,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		}
 	}
 
-	private void filterComponents(List<RawSetting> settings) {
+	protected void filterComponents(List<RawSetting> settings) {
 		settings.sort(Comparator.comparing(RawSetting::getComponentOrder).reversed());
 
 		boolean first = true;
@@ -218,7 +233,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		}
 	}
 
-	private void filterVersions(Version requestedVersion, Collection<List<RawSetting>> valueLists) {
+	protected void filterVersions(Version requestedVersion, Collection<List<RawSetting>> valueLists) {
 		if (requestedVersion == null) {
 			return;
 		}
@@ -230,7 +245,7 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		}
 	}
 
-	private void filterVersions(Version requestedVersion, List<RawSetting> settings) {
+	protected void filterVersions(Version requestedVersion, List<RawSetting> settings) {
 		VersionSortComparator cmp = new VersionSortComparator(requestedVersion.getOrdering());
 		settings.sort(cmp);
 
@@ -278,22 +293,6 @@ public abstract class AbstractRdbmsDatabaseAccess implements DatabaseAccess {
 		application.setComponents(acs);
 
 		return application;
-	}
-
-	private Integer queryForInteger(String query, MapSqlParameterSource params) {
-		List<Integer> l = template.queryForList(query, params, Integer.class);
-		if (l.isEmpty()) {
-			return null;
-		}
-		return l.iterator().next();
-	}
-
-	private <T> T queryForObject(String query, MapSqlParameterSource params, Class<T> clazz) {
-		List<T> l = template.query(query, params, new BeanPropertyRowMapper<>(clazz));
-		if (l.isEmpty()) {
-			return null;
-		}
-		return l.iterator().next();
 	}
 
 	@Override
