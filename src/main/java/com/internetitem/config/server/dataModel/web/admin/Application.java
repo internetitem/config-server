@@ -1,4 +1,4 @@
-package com.internetitem.config.server.dataModel.db;
+package com.internetitem.config.server.dataModel.web.admin;
 
 import java.util.List;
 

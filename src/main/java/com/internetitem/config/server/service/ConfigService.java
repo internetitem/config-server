@@ -1,10 +1,10 @@
 package com.internetitem.config.server.service;
 
 import com.internetitem.config.server.dao.DatabaseAccess;
-import com.internetitem.config.server.dataModel.db.Application;
-import com.internetitem.config.server.dataModel.db.Environment;
-import com.internetitem.config.server.dataModel.db.Setting;
-import com.internetitem.config.server.dataModel.db.Version;
+import com.internetitem.config.server.dataModel.web.admin.Application;
+import com.internetitem.config.server.dataModel.web.admin.Environment;
+import com.internetitem.config.server.dataModel.web.admin.Setting;
+import com.internetitem.config.server.dataModel.web.admin.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

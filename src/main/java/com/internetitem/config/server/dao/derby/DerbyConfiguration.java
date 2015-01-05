@@ -30,8 +30,6 @@ public class DerbyConfiguration {
 			Properties props = new Properties();
 			props.put("create", "true");
 			DriverManager.getConnection(url, props).close();
-		} else {
-//			Class.forName("org.apache.derby.jdbc.ClientDriver");
 		}
 	}
 

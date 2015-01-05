@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.internetitem.config.server.dataModel.db.*;
+import com.internetitem.config.server.dataModel.web.admin.*;
 
 public interface DatabaseAccess {
 
@@ -25,11 +26,11 @@ public interface DatabaseAccess {
 
 	Environment createEnvironment(String name);
 
-	com.internetitem.config.server.dataModel.db.Component getComponent(String name);
+	Component getComponent(String name);
 
-	com.internetitem.config.server.dataModel.db.Component createComponent(String name);
+	Component createComponent(String name);
 
-	Application mapComponentToApplication(com.internetitem.config.server.dataModel.db.Component comp, Application app, Integer order) throws SQLException;
+	Application mapComponentToApplication(Component comp, Application app, Integer order) throws SQLException;
 
 	Version createVersion(Application application, String name, Integer order, boolean shift) throws SQLException;
 

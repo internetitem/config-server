@@ -1,6 +1,6 @@
-package com.internetitem.config.server.dao.derby;
+package com.internetitem.config.server.dao.rdbms.dataModel;
 
-import com.internetitem.config.server.dao.derby.dataModel.RawSetting;
+import com.internetitem.config.server.dao.rdbms.dataModel.RawSetting;
 
 public class VersionSortComparator implements java.util.Comparator<RawSetting> {
 

@@ -1,4 +1,4 @@
-package com.internetitem.config.server.dao.derby.dataModel;
+package com.internetitem.config.server.dao.rdbms.dataModel;
 
 public class RawComponent {
 	private long componentId;
