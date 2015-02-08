@@ -15,8 +15,9 @@ public class SettingAction {
 	@Column(name = "ActionId")
 	private long actionId;
 
-	@Column(name = "Username", length = 50)
-	private String username;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "UserId", referencedColumnName = "UserId", nullable = false)
+	private SettingUser user;
 
 	@Column(name = "Hostname", length = 50)
 	private String hostname;
@@ -42,8 +43,8 @@ public class SettingAction {
 	protected SettingAction() {
 	}
 
-	public SettingAction(String username, String hostname, String source, String comments, SettingApplicationGroup applicationGroup, Date eventTimestamp) {
-		this.username = username;
+	public SettingAction(SettingUser user, String hostname, String source, String comments, SettingApplicationGroup applicationGroup, Date eventTimestamp) {
+		this.user = user;
 		this.hostname = hostname;
 		this.source = source;
 		this.comments = comments;
@@ -59,12 +60,12 @@ public class SettingAction {
 		this.actionId = actionId;
 	}
 
-	public String getUsername() {
-		return username;
+	public SettingUser getUser() {
+		return user;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUser(SettingUser user) {
+		this.user = user;
 	}
 
 	public String getHostname() {
