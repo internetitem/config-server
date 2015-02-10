@@ -4,11 +4,15 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="SettingApplicationGroup")
+@NamedQueries({
+		@NamedQuery(name = "ApplicationGroup.fetchByName", query = "SELECT ag FROM SettingApplicationGroup ag WHERE ag.applicationGroupName = :applicationGroupName"),
+		@NamedQuery(name = "ApplicationGroup.fetchAll", query = "SELECT ag FROM SettingApplicationGroup ag")
+})
 public class SettingApplicationGroup {
 
 	@Id
 	@GeneratedValue(generator = "seqApplicationGroupId")
-	@SequenceGenerator(name = "seqApplicationGroupId", sequenceName = "SeqApplicationGroup")
+	@SequenceGenerator(name = "seqApplicationGroupId", sequenceName = "SeqSettingApplicationGroup")
 	@Column(name = "ApplicationGroupId")
 	private long applicationGroupId;
 

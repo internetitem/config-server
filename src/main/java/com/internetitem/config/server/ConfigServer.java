@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAutoConfiguration
 @ComponentScan
 @EnableTransactionManagement
-public class Tester {
+public class ConfigServer {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Tester.class, args);
+		SpringApplication.run(ConfigServer.class, args);
 	}
 
 }

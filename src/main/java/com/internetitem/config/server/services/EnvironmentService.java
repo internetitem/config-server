@@ -1,6 +1,8 @@
 package com.internetitem.config.server.services;
 
+import com.internetitem.config.server.db.dao.ApplicationGroupDao;
 import com.internetitem.config.server.db.dao.EnvironmentDao;
+import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.db.dataModel.SettingEnvironment;
 import com.internetitem.config.server.services.dataModel.CreateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +17,40 @@ import javax.ws.rs.PathParam;
 import java.util.List;
 
 @Service
-@Path("environment")
+@Path("environment/{applicationGroup}")
 public class EnvironmentService {
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	private EnvironmentDao environmentDao;
 
+	@Autowired
+	private ApplicationGroupDao applicationGroupDao;
+
 	@GET
 	@Transactional
-	public List<SettingEnvironment> getEnvironments() {
-		return environmentDao.getAllEnvironments();
+	public List<SettingEnvironment> getEnvironments(@PathParam("applicationGroup") String applicationGroupName) {
+		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
+		if (appGroup == null) {
+			throw new IllegalArgumentException("Unknown Application Group");
+		}
+		return environmentDao.getAllEnvironments(appGroup);
 	}
 
 	@POST
-	@Path("environment/{environmentName}")
+	@Path("{environmentName}")
 	@Transactional
-	public CreateResponse createEnvironment(@PathParam("environmentName") String environmentName) {
-		SettingEnvironment oldEnvironment = environmentDao.getEnvironmentByName(environmentName);
+	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @PathParam("environmentName") String environmentName) {
+		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
+		if (appGroup == null) {
+			return new CreateResponse(false, "Unknown Application Group", null);
+		}
+
+		SettingEnvironment oldEnvironment = environmentDao.getEnvironmentByName(appGroup, environmentName);
 		if (oldEnvironment != null) {
 			return new CreateResponse(false, "Environment already exists", null);
 		}
 
-		SettingEnvironment env = environmentDao.createEnvironment(environmentName);
+		SettingEnvironment env = environmentDao.createEnvironment(appGroup, environmentName);
 		return new CreateResponse(true, "Created Environment " + environmentName, Long.valueOf(env.getEnvironmentId()));
 	}
 }

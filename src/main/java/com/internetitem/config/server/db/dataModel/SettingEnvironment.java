@@ -5,8 +5,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "SettingEnvironment")
 @NamedQueries({
-		@NamedQuery(name = "Environment.fetchByName", query = "SELECT e FROM SettingEnvironment e WHERE e.environmentName = :environmentName"),
-		@NamedQuery(name = "Environment.fetchAll", query = "SELECT e FROM SettingEnvironment e")
+		@NamedQuery(name = "Environment.fetchByName", query = "SELECT e FROM SettingEnvironment e WHERE e.environmentName = :environmentName and e.applicationGroup = :applicationGroup"),
+		@NamedQuery(name = "Environment.fetchAll", query = "SELECT e FROM SettingEnvironment e WHERE e.applicationGroup = :applicationGroup")
 })
 public class SettingEnvironment {
 
