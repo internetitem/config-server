@@ -10,13 +10,8 @@ import javax.persistence.*;
 })
 public class SettingApplicationGroup {
 
-	@Id
-	@GeneratedValue(generator = "seqApplicationGroupId")
-	@SequenceGenerator(name = "seqApplicationGroupId", sequenceName = "SeqSettingApplicationGroup")
-	@Column(name = "ApplicationGroupId")
 	private long applicationGroupId;
 
-	@Column(name="ApplicationGroupName", nullable = false, unique = true)
 	private String applicationGroupName;
 
 	protected SettingApplicationGroup() {
@@ -26,6 +21,10 @@ public class SettingApplicationGroup {
 		this.applicationGroupName = applicationGroupName;
 	}
 
+	@Id
+	@GeneratedValue(generator = "seqApplicationGroupId")
+	@SequenceGenerator(name = "seqApplicationGroupId", sequenceName = "SeqSettingApplicationGroup")
+	@Column(name = "ApplicationGroupId")
 	public long getApplicationGroupId() {
 		return applicationGroupId;
 	}
@@ -34,6 +33,7 @@ public class SettingApplicationGroup {
 		this.applicationGroupId = applicationGroupId;
 	}
 
+	@Column(name="ApplicationGroupName", nullable = false, unique = true)
 	public String getApplicationGroupName() {
 		return applicationGroupName;
 	}

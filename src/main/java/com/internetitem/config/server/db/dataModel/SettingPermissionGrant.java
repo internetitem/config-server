@@ -6,34 +6,18 @@ import javax.persistence.*;
 @Table(name = "SettingPermissionGrant")
 public class SettingPermissionGrant {
 
-	@Id
-	@GeneratedValue(generator = "seqPermissionGrant")
-	@SequenceGenerator(name = "seqPermissionGrant", sequenceName = "SeqSettingPermissiongrant")
-	@Column(name = "PermissionGrantId")
 	private long permissionGrantId;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "UserGroupId", referencedColumnName = "UserGroupId", nullable = false)
 	private SettingUserGroup group;
 
-	@Convert(converter = SettingPermissionGrantType.SettingPermissionGrantTypeConverter.class)
-	@Column(name = "GrantTypeId", nullable = false)
 	private SettingPermissionGrantType grantType;
 
-	@Convert(converter = SettingPermissionType.SettingPermissionTypeConverter.class)
-	@Column(name = "PermissionTypeId", nullable = false)
 	private SettingPermissionType permissionType;
 
-	@ManyToOne
-	@JoinColumn(name = "ApplicationGroupId", referencedColumnName = "ApplicationGroupId")
 	private SettingApplicationGroup applicationGroup;
 
-	@ManyToOne
-	@JoinColumn(name = "ApplicationId", referencedColumnName = "ApplicationId")
 	private SettingApplication application;
 
-	@ManyToOne
-	@JoinColumn(name = "ComponentId", referencedColumnName = "ComponentId")
 	private SettingComponent component;
 
 	protected SettingPermissionGrant() {
@@ -48,6 +32,10 @@ public class SettingPermissionGrant {
 		this.component = component;
 	}
 
+	@Id
+	@GeneratedValue(generator = "seqPermissionGrant")
+	@SequenceGenerator(name = "seqPermissionGrant", sequenceName = "SeqSettingPermissiongrant")
+	@Column(name = "PermissionGrantId")
 	public long getPermissionGrantId() {
 		return permissionGrantId;
 	}
@@ -56,6 +44,8 @@ public class SettingPermissionGrant {
 		this.permissionGrantId = permissionGrantId;
 	}
 
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "UserGroupId", referencedColumnName = "UserGroupId", nullable = false)
 	public SettingUserGroup getGroup() {
 		return group;
 	}
@@ -64,6 +54,8 @@ public class SettingPermissionGrant {
 		this.group = group;
 	}
 
+	@Convert(converter = SettingPermissionGrantType.SettingPermissionGrantTypeConverter.class)
+	@Column(name = "GrantTypeId", nullable = false)
 	public SettingPermissionGrantType getGrantType() {
 		return grantType;
 	}
@@ -72,6 +64,8 @@ public class SettingPermissionGrant {
 		this.grantType = grantType;
 	}
 
+	@Convert(converter = SettingPermissionType.SettingPermissionTypeConverter.class)
+	@Column(name = "PermissionTypeId", nullable = false)
 	public SettingPermissionType getPermissionType() {
 		return permissionType;
 	}
@@ -80,6 +74,8 @@ public class SettingPermissionGrant {
 		this.permissionType = permissionType;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ApplicationGroupId", referencedColumnName = "ApplicationGroupId")
 	public SettingApplicationGroup getApplicationGroup() {
 		return applicationGroup;
 	}
@@ -88,6 +84,8 @@ public class SettingPermissionGrant {
 		this.applicationGroup = applicationGroup;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ApplicationId", referencedColumnName = "ApplicationId")
 	public SettingApplication getApplication() {
 		return application;
 	}
@@ -96,6 +94,8 @@ public class SettingPermissionGrant {
 		this.application = application;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ComponentId", referencedColumnName = "ComponentId")
 	public SettingComponent getComponent() {
 		return component;
 	}

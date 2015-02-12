@@ -143,14 +143,6 @@ CREATE TABLE SettingPermissionGrant (
   CONSTRAINT fkPermissionGrantComponent FOREIGN KEY (ComponentId) REFERENCES SettingComponent (ComponentId)
 );
 
-CREATE TABLE SettingGroupPermissionGrant (
-  UserGroupId INTEGER NOT NULL,
-  PermissionGrantId INTEGER NOT NULL,
-  CONSTRAINT pkGroupPermissionGrant PRIMARY KEY (UserGroupId, PermissionGrantId),
-  CONSTRAINT fkGroupPermissionGrantGroup FOREIGN KEY (UserGroupId) REFERENCES SettingUserGroup (UserGroupId),
-  CONSTRAINT fkGroupPermissionGrantPermissionGrant FOREIGN KEY (PermissionGrantId) REFERENCES SettingPermissionGrant (PermissionGrantId)
-);
-
 CREATE SEQUENCE SeqSettingAction;
 CREATE TABLE SettingAction (
   ActionId BIGINT PRIMARY KEY DEFAULT nextval('SeqSettingAction'),

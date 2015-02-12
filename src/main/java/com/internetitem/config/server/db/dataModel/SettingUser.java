@@ -6,6 +6,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "SettingUser")
+@NamedQueries(
+	@NamedQuery(name = "User.fetchWithPermissions", query = "SELECT u FROM SettingUser u LEFT JOIN FETCH u.groups g LEFT JOIN FETCH g.grants gt WHERE u.username = :username")
+)
 public class SettingUser {
 
 	@Id
@@ -65,6 +68,14 @@ public class SettingUser {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public Set<SettingUserGroup> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Set<SettingUserGroup> groups) {
+		this.groups = groups;
 	}
 
 	@Override

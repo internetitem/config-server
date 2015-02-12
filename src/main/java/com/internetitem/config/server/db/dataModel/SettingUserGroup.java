@@ -21,8 +21,7 @@ public class SettingUserGroup {
 	@JoinTable(name = "SettingUserGroupMember", joinColumns = @JoinColumn(name = "UserGroupId"), inverseJoinColumns = @JoinColumn(name = "UserId"))
 	private Set<SettingUser> members = new HashSet<>();
 
-	@ManyToMany
-	@JoinTable(name= "SettingGroupPermissionGrant", joinColumns = @JoinColumn(name = "UserGroupId"), inverseJoinColumns = @JoinColumn(name = "PermissionGrantId"))
+	@OneToMany(mappedBy = "group")
 	private Set<SettingPermissionGrant> grants = new HashSet<>();
 
 	protected SettingUserGroup() {
