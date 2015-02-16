@@ -11,8 +11,9 @@ CREATE TABLE SettingApplication (
 	ApplicationId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingApplication'),
 	ApplicationName VARCHAR(50) NOT NULL,
   ApplicationGroupId INTEGER NOT NULL,
-  CONSTRAINT fkApplicationApplicationGroup FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId),
-	CONSTRAINT unqApplicationName UNIQUE (ApplicationGroupId, ApplicationName)
+  CreatedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,
+  CONSTRAINT fkApplicationApplicationGroup FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId)
 );
 ALTER SEQUENCE SeqSettingApplication OWNED BY SettingApplication.ApplicationId;
 
@@ -21,19 +22,24 @@ CREATE TABLE SettingComponent (
 	ComponentId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingComponent'),
 	ComponentName VARCHAR(50) NOT NULL,
   ApplicationGroupId INTEGER NOT NULL,
-  CONSTRAINT fkComponentApplicationGroup FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId),
-	CONSTRAINT unqComponentName UNIQUE (ApplicationGroupId, ComponentName)
+  CreatedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,
+  CONSTRAINT fkComponentApplicationGroup FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId)
 );
 ALTER SEQUENCE SeqSettingComponent OWNED BY SettingComponent.ComponentId;
 
+CREATE SEQUENCE SeqSettingApplicationComponent;
 CREATE TABLE SettingApplicationComponent (
+  ApplicationComponentId INTEGER PRIMARY KEY,
 	ApplicationId INTEGER NOT NULL,
 	ComponentId INTEGER NOT NULL,
 	Ordering INTEGER NOT NULL,
-	CONSTRAINT pkApplicationComponent PRIMARY KEY (ApplicationId, ComponentId),
+  CreatedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,
 	CONSTRAINT fkApplicationComponentApplication FOREIGN KEY (ApplicationId) REFERENCES SettingApplication (ApplicationId),
 	CONSTRAINT fkApplicationComponentComponent FOREIGN KEY (ComponentId) REFERENCES SettingComponent (ComponentId)
 );
+ALTER SEQUENCE SeqSettingApplicationComponent OWNED BY SettingApplicationComponent.ApplicationComponentId;
 
 CREATE SEQUENCE SeqSettingVersion;
 CREATE TABLE SettingVersion (
@@ -41,7 +47,9 @@ CREATE TABLE SettingVersion (
 	ApplicationId INTEGER NOT NULL,
 	VersionString VARCHAR(50) NOT NULL,
 	Ordering INTEGER NOT NULL,
-	CONSTRAINT fkVersionApplication FOREIGN KEY (ApplicationId) REFERENCES SettingApplication (ApplicationId)
+  CreatedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,
+  CONSTRAINT fkVersionApplication FOREIGN KEY (ApplicationId) REFERENCES SettingApplication (ApplicationId)
 );
 ALTER SEQUENCE SeqSettingVersion OWNED BY SettingVersion.VersionId;
 
@@ -50,8 +58,9 @@ CREATE TABLE SettingEnvironment (
 	EnvironmentId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingEnvironment'),
 	EnvironmentName VARCHAR(50) NOT NULL,
   ApplicationGroupId INTEGER NOT NULL,
-  CONSTRAINT fkEnvironmentApplicationGroup FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId),
-  CONSTRAINT unqSettingEnvironment UNIQUE (ApplicationGroupId, EnvironmentName)
+  CreatedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,  CONSTRAINT fkEnvironmentApplicationGroup
+  FOREIGN KEY (ApplicationGroupId) REFERENCES SettingApplicationGroup (ApplicationGroupId)
 );
 ALTER SEQUENCE SeqSettingEnvironment OWNED BY SettingEnvironment.EnvironmentId;
 
@@ -70,7 +79,7 @@ CREATE TABLE SettingValue (
 	ApplicationId INTEGER,
 	EnvironmentId INTEGER,
 	CreatedTs TIMESTAMPTZ NOT NULL,
-  DeletedTs TIMESTAMPTZ NOT NULL,
+  DeletedTs TIMESTAMPTZ,
 	CONSTRAINT fkValueVersionFrom FOREIGN KEY (VersionFrom) REFERENCES SettingVersion (VersionId),
 	CONSTRAINT fkValueVersionTo FOREIGN KEY (VersionTo) REFERENCES SettingVersion (VersionId),
 	CONSTRAINT fkValueComponent FOREIGN KEY (ComponentId) REFERENCES SettingComponent (ComponentId),
@@ -175,6 +184,36 @@ CREATE TABLE SettingActionValue (
   CONSTRAINT fkActionValueType FOREIGN KEY (ActionTypeId) REFERENCES SettingActionType (ActionTypeId)
 );
 ALTER SEQUENCE SeqSettingActionValue OWNED BY SettingActionValue.ActionValueId;
+
+CREATE TABLE SettingActionStructureChangeType (
+  ActionStructureChangeTypeId INTEGER PRIMARY KEY,
+  ActionStructureChangeTypeName VARCHAR(50) NOT NULL,
+  CONSTRAINT unqActionStructureChangeTypeName UNIQUE (ActionStructureChangeTypeName)
+);
+INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (1, 'Application');
+INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (2, 'Component');
+INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (3, 'Version');
+INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (4, 'Environment');
+
+CREATE SEQUENCE SeqSettingActionStructure;
+CREATE TABLE SettingActionStructureChange (
+  ActionStructureChangeId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingActionStructure'),
+  ActionId INTEGER NOT NULL,
+  ActionStructureChangeTypeId INTEGER NOT NULL,
+  ActionTypeId INTEGER NOT NULL,
+  ApplicationId INTEGER,
+  ComponentId INTEGER,
+  VersionId INTEGER,
+  EnvironmentId INTEGER,
+  CONSTRAINT fkActionStructureChangeAction FOREIGN KEY (ActionId) REFERENCES SettingAction (ActionId),
+  CONSTRAINT fkActionStructureChangeActionType FOREIGN KEY (ActionTypeId) REFERENCES SettingActionType (ActionTypeId),
+  CONSTRAINT fkActionStructureChangeType FOREIGN KEY (ActionStructureChangeTypeId) REFERENCES SettingActionStructureChangeType (ActionStructureChangeTypeId),
+  CONSTRAINT fkActionStructureChangeApplication FOREIGN KEY (ApplicationId) REFERENCES SettingApplication (ApplicationId),
+  CONSTRAINT fkActionStructureChangeComponent FOREIGN KEY (ComponentId) REFERENCES SettingComponent (ComponentId),
+  CONSTRAINT fkActionStructureChangeVersion FOREIGN KEY (VersionId) REFERENCES SettingVersion (VersionId),
+  CONSTRAINT fkActionStructureChangeEnvironment FOREIGN KEY (EnvironmentId) REFERENCES settingenvironment (EnvironmentId)
+);
+ALTER SEQUENCE SeqSettingActionStructure OWNED BY SettingActionStructureChange.ActionStructureChangeId;
 
 CREATE TABLE SchemaVersion (
 	SchemaType VARCHAR(50) NOT NULL PRIMARY KEY,

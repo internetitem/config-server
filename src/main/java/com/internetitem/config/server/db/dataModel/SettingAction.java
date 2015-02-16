@@ -40,6 +40,9 @@ public class SettingAction {
 	@OneToMany(mappedBy = "action")
 	private Set<SettingActionValue> values = new HashSet<>();
 
+	@OneToMany(mappedBy = "action")
+	private Set<SettingActionStructureChange> structureChanges = new HashSet<>();
+
 	protected SettingAction() {
 	}
 
@@ -114,6 +117,14 @@ public class SettingAction {
 
 	public void setValues(Set<SettingActionValue> values) {
 		this.values = values;
+	}
+
+	public Set<SettingActionStructureChange> getStructureChanges() {
+		return structureChanges;
+	}
+
+	public void setStructureChanges(Set<SettingActionStructureChange> structureChanges) {
+		this.structureChanges = structureChanges;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.db.dataModel.SettingEnvironment;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -18,7 +19,7 @@ public class EnvironmentDao extends AbstractDao {
 	}
 
 	public SettingEnvironment createEnvironment(SettingApplicationGroup applicationGroup, String environmentName) {
-		SettingEnvironment env = new SettingEnvironment(environmentName, applicationGroup);
+		SettingEnvironment env = new SettingEnvironment(environmentName, applicationGroup, new Date());
 		entityManager.persist(env);
 		return env;
 	}

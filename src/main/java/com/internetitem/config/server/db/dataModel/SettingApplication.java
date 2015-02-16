@@ -1,8 +1,7 @@
 package com.internetitem.config.server.db.dataModel;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "SettingApplication")
@@ -14,29 +13,35 @@ public class SettingApplication {
 	@Column(name = "ApplicationId")
 	private long applicationId;
 
-	@Column(name = "ApplicationName", unique = true, nullable = false, updatable = false, length = 50)
+	@Column(name = "ApplicationName", nullable = false, updatable = false, length = 50)
 	private String applicationName;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "ApplicationGroupId", referencedColumnName = "ApplicationGroupId", nullable = false)
 	private SettingApplicationGroup applicationGroup;
 
-	@ManyToMany
-	@JoinTable(name = "SettingApplicationComponent", joinColumns = @JoinColumn(name = "ApplicationId"), inverseJoinColumns = @JoinColumn(name = "ComponentId"))
-	@OrderColumn(name = "Ordering")
-	private List<SettingComponent> components = new ArrayList<>();
+	@OneToMany(mappedBy = "application")
+	private Set<SettingApplicationComponent> components = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ApplicationId", referencedColumnName = "ApplicationId")
-	@OrderBy("ordering")
-	private List<SettingVersion> versions = new ArrayList<>();
+	private Set<SettingVersion> versions = new HashSet<>();
+
+	@Column(name = "CreatedTs", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdTimestamp;
+
+	@Column(name = "DeletedTs")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deletedTimestamp;
 
 	protected SettingApplication() {
 	}
 
-	public SettingApplication(String applicationName, SettingApplicationGroup applicationGroup) {
+	public SettingApplication(String applicationName, SettingApplicationGroup applicationGroup, Date createdTimestamp) {
 		this.applicationName = applicationName;
 		this.applicationGroup = applicationGroup;
+		this.createdTimestamp = createdTimestamp;
 	}
 
 	public long getApplicationId() {
@@ -63,20 +68,36 @@ public class SettingApplication {
 		this.applicationGroup = applicationGroup;
 	}
 
-	public List<SettingComponent> getComponents() {
+	public Set<SettingApplicationComponent> getComponents() {
 		return components;
 	}
 
-	public void setComponents(List<SettingComponent> components) {
+	public void setComponents(Set<SettingApplicationComponent> components) {
 		this.components = components;
 	}
 
-	public List<SettingVersion> getVersions() {
+	public Set<SettingVersion> getVersions() {
 		return versions;
 	}
 
-	public void setVersions(List<SettingVersion> versions) {
+	public void setVersions(Set<SettingVersion> versions) {
 		this.versions = versions;
+	}
+
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
+	}
+
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
+
+	public Date getDeletedTimestamp() {
+		return deletedTimestamp;
+	}
+
+	public void setDeletedTimestamp(Date deletedTimestamp) {
+		this.deletedTimestamp = deletedTimestamp;
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class SettingValue {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdTs;
 
-	@Column(name = "DeletedTs", nullable = false)
+	@Column(name = "DeletedTs")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedTs;
 

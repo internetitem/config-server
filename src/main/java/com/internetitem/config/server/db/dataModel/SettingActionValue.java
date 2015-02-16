@@ -12,8 +12,8 @@ public class SettingActionValue {
 	@Column(name = "ActionValueId")
 	private long actionValueId;
 
-	@ManyToOne
-	@JoinColumn(name = "ActionId", referencedColumnName = "ActionId")
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "ActionId", referencedColumnName = "ActionId", nullable = false)
 	private SettingAction action;
 
 	@Column(name="ActionTypeId", nullable = false)

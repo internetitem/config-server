@@ -1,6 +1,7 @@
 package com.internetitem.config.server.db.dataModel;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "SettingVersion")
@@ -21,13 +22,22 @@ public class SettingVersion {
 	@Column(name = "Ordering", nullable = false)
 	private int ordering;
 
+	@Column(name = "CreatedTs", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdTimestamp;
+
+	@Column(name = "DeletedTs")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deletedTimestamp;
+
 	protected SettingVersion() {
 	}
 
-	public SettingVersion(SettingApplication application, String label, int ordering) {
+	public SettingVersion(SettingApplication application, String label, int ordering, Date createdTimestamp) {
 		this.application = application;
 		this.label = label;
 		this.ordering = ordering;
+		this.createdTimestamp = createdTimestamp;
 	}
 
 	public SettingApplication getApplication() {
@@ -60,6 +70,14 @@ public class SettingVersion {
 
 	public void setVersionId(long versionId) {
 		this.versionId = versionId;
+	}
+
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
+	}
+
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.internetitem.config.server.db.dataModel;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "SettingEnvironment")
@@ -16,19 +17,28 @@ public class SettingEnvironment {
 	@Column(name = "EnvironmentId")
 	private long environmentId;
 
-	@Column(name = "EnvironmentName", unique = true, nullable = false, updatable = false, length = 50)
+	@Column(name = "EnvironmentName", nullable = false, updatable = false, length = 50)
 	private String environmentName;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "ApplicationGroupId", referencedColumnName = "ApplicationGroupId", nullable = false)
 	private SettingApplicationGroup applicationGroup;
 
+	@Column(name = "CreatedTs", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdTimestamp;
+
+	@Column(name = "DeletedTs")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deletedTimestamp;
+
 	protected SettingEnvironment() {
 	}
 
-	public SettingEnvironment(String environmentName, SettingApplicationGroup applicationGroup) {
+	public SettingEnvironment(String environmentName, SettingApplicationGroup applicationGroup, Date createdTimestamp) {
 		this.environmentName = environmentName;
 		this.applicationGroup = applicationGroup;
+		this.createdTimestamp = createdTimestamp;
 	}
 
 	public long getEnvironmentId() {
@@ -53,6 +63,22 @@ public class SettingEnvironment {
 
 	public void setApplicationGroup(SettingApplicationGroup applicationGroup) {
 		this.applicationGroup = applicationGroup;
+	}
+
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
+	}
+
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
+
+	public Date getDeletedTimestamp() {
+		return deletedTimestamp;
+	}
+
+	public void setDeletedTimestamp(Date deletedTimestamp) {
+		this.deletedTimestamp = deletedTimestamp;
 	}
 
 	@Override

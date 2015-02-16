@@ -1,6 +1,7 @@
 package com.internetitem.config.server.db.dataModel;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "SettingComponent")
@@ -12,19 +13,28 @@ public class SettingComponent {
 	@Column(name = "ComponentId")
 	private long componentId;
 
-	@Column(name = "ComponentName", unique = true, nullable = false, updatable = false, length = 50)
+	@Column(name = "ComponentName", nullable = false, updatable = false, length = 50)
 	private String componentName;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "ApplicationGroupId", referencedColumnName = "ApplicationGroupId", nullable = false)
 	private SettingApplicationGroup applicationGroup;
 
+	@Column(name = "CreatedTs", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdTimestamp;
+
+	@Column(name = "DeletedTs")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deletedTimestamp;
+
 	protected SettingComponent() {
 	}
 
-	public SettingComponent(String componentName, SettingApplicationGroup applicationGroup) {
+	public SettingComponent(String componentName, SettingApplicationGroup applicationGroup, Date createdTimestamp) {
 		this.componentName = componentName;
 		this.applicationGroup = applicationGroup;
+		this.createdTimestamp = createdTimestamp;
 	}
 
 	public SettingComponent(String componentNameName) {
@@ -53,6 +63,22 @@ public class SettingComponent {
 
 	public void setApplicationGroup(SettingApplicationGroup applicationGroup) {
 		this.applicationGroup = applicationGroup;
+	}
+
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
+	}
+
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
+
+	public Date getDeletedTimestamp() {
+		return deletedTimestamp;
+	}
+
+	public void setDeletedTimestamp(Date deletedTimestamp) {
+		this.deletedTimestamp = deletedTimestamp;
 	}
 
 	@Override
