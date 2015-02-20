@@ -64,11 +64,22 @@ CREATE TABLE SettingEnvironment (
 );
 ALTER SEQUENCE SeqSettingEnvironment OWNED BY SettingEnvironment.EnvironmentId;
 
+CREATE TABLE SettingValueType (
+  ValueTypeId INTEGER PRIMARY KEY,
+  ValueTypeName VARCHAR(50) NOT NULL,
+  CONSTRAINT unqValueTypeName UNIQUE (ValueTypeName)
+);
+
+INSERT INTO SettingValueType (ValueTypeId, ValueTypeName) VALUES (1, 'Deleted');
+INSERT INTO SettingValueType (ValueTypeId, ValueTypeName) VALUES (2, 'String');
+INSERT INTO SettingValueType (ValueTypeId, ValueTypeName) VALUES (3, 'JSON');
+
 CREATE SEQUENCE SeqSettingValue;
 CREATE TABLE SettingValue (
 	SettingId BIGINT PRIMARY KEY DEFAULT nextval('SeqSettingValue'),
 	SettingKey VARCHAR(100) NOT NULL,
-	SettingValue TEXT NOT NULL,
+	SettingValue TEXT,
+  ValueTypeId INTEGER NOT NULL,
   SettingConstraints TEXT NULL,
 	ValidFrom TIMESTAMPTZ,
 	ValidTo TIMESTAMPTZ,
@@ -80,6 +91,7 @@ CREATE TABLE SettingValue (
 	EnvironmentId INTEGER,
 	CreatedTs TIMESTAMPTZ NOT NULL,
   DeletedTs TIMESTAMPTZ,
+  CONSTRAINT fkValueType FOREIGN KEY (ValueTypeId) REFERENCES SettingValueType (ValueTypeId),
 	CONSTRAINT fkValueVersionFrom FOREIGN KEY (VersionFrom) REFERENCES SettingVersion (VersionId),
 	CONSTRAINT fkValueVersionTo FOREIGN KEY (VersionTo) REFERENCES SettingVersion (VersionId),
 	CONSTRAINT fkValueComponent FOREIGN KEY (ComponentId) REFERENCES SettingComponent (ComponentId),

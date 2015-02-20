@@ -16,9 +16,13 @@ public class SettingValue {
 	@Column(name = "SettingKey", nullable = false, length = 100)
 	private String key;
 
-	@Column(name = "SettingValue", nullable = false)
+	@Column(name = "SettingValue")
 	@Lob
 	private String value;
+
+	@Convert(converter = SettingValueType.SettingValueTypeConverter.class)
+	@Column(name = "ValueTypeId", nullable = false)
+	private SettingValueType valueType;
 
 	@Column(name = "SettingConstraints")
 	@Lob
@@ -67,9 +71,10 @@ public class SettingValue {
 	protected SettingValue() {
 	}
 
-	public SettingValue(String key, String value, String constraints, Date validFrom, Date validTo, SettingVersion versionFrom, SettingVersion versionTo, SettingApplicationGroup applicationGroup, SettingComponent component, SettingApplication application, SettingEnvironment environment, Date createdTs) {
+	public SettingValue(String key, String value, SettingValueType valueType, String constraints, Date validFrom, Date validTo, SettingVersion versionFrom, SettingVersion versionTo, SettingApplicationGroup applicationGroup, SettingComponent component, SettingApplication application, SettingEnvironment environment, Date createdTs) {
 		this.key = key;
 		this.value = value;
+		this.valueType = valueType;
 		this.constraints = constraints;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
@@ -104,6 +109,14 @@ public class SettingValue {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public SettingValueType getValueType() {
+		return valueType;
+	}
+
+	public void setValueType(SettingValueType valueType) {
+		this.valueType = valueType;
 	}
 
 	public String getConstraints() {
