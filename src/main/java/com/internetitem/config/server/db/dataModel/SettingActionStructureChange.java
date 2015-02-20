@@ -9,7 +9,7 @@ public class SettingActionStructureChange {
 	@Id
 	@GeneratedValue(generator = "seqActionStructureChange")
 	@SequenceGenerator(name = "seqActionStructureChange", sequenceName = "SeqSettingActionStructureChange")
-	@Column(name = "ApplicationId")
+	@Column(name = "ActionStructureChangeId")
 	private long actionStructureChangeId;
 
 	@ManyToOne(optional = false)

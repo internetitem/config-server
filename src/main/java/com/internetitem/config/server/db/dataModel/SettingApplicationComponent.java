@@ -10,7 +10,7 @@ public class SettingApplicationComponent {
 	@Id
 	@GeneratedValue(generator = "seqApplicationComponent")
 	@SequenceGenerator(name = "seqApplicationComponent", sequenceName = "SeqSettingApplicationComponent")
-	@Column(name = "ApplicationId")
+	@Column(name = "ApplicationComponentId")
 	private long applicationComponentId;
 
 	@ManyToOne
