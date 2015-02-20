@@ -234,3 +234,7 @@ CREATE TABLE SchemaVersion (
 
 INSERT INTO SchemaVersion (SchemaType, CurrentVersion) VALUES ('Settings', 1);
 
+
+
+insert into settinguser (username, password, active) values ('user', 'password', 1::bit);
+
