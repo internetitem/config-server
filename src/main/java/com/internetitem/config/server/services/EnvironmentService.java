@@ -4,6 +4,7 @@ import com.internetitem.config.server.db.dao.ApplicationGroupDao;
 import com.internetitem.config.server.db.dao.EnvironmentDao;
 import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.db.dataModel.SettingEnvironment;
+import com.internetitem.config.server.security.PermissionSet;
 import com.internetitem.config.server.services.dataModel.CreateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Service
 @Path("environment/{applicationGroup}")
-public class EnvironmentService {
+public class EnvironmentService extends AbstractService {
 
 	@Autowired
 	private EnvironmentDao environmentDao;
@@ -26,13 +27,19 @@ public class EnvironmentService {
 	@Autowired
 	private ApplicationGroupDao applicationGroupDao;
 
+	@Autowired
+	private PermissionSet permissionSet;
+
 	@GET
 	@Transactional
 	public List<SettingEnvironment> getEnvironments(@PathParam("applicationGroup") String applicationGroupName) {
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup == null) {
-			throw new IllegalArgumentException("Unknown Application Group");
+			return notFound("Unknown Application Group");
 		}
+
+		ensurePermission(permissionSet.canAdminAppGroup(appGroup));
+
 		return environmentDao.getAllEnvironments(appGroup);
 	}
 
@@ -44,6 +51,8 @@ public class EnvironmentService {
 		if (appGroup == null) {
 			return new CreateResponse(false, "Unknown Application Group", null);
 		}
+
+		ensurePermission(permissionSet.canAdminAppGroup(appGroup));
 
 		SettingEnvironment oldEnvironment = environmentDao.getEnvironmentByName(appGroup, environmentName);
 		if (oldEnvironment != null) {
