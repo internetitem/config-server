@@ -1,10 +1,8 @@
 package com.internetitem.config.server.security;
 
 import com.internetitem.config.server.db.dataModel.*;
-import com.internetitem.config.server.services.dataModel.PermissionItem;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class PermissionSet {

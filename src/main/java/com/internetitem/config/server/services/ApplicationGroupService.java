@@ -4,6 +4,7 @@ import com.internetitem.config.server.db.dao.ApplicationGroupDao;
 import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.security.PermissionSet;
 import com.internetitem.config.server.services.dataModel.CreateResponse;
+import com.internetitem.config.server.services.exception.InsufficientPermissionsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class ApplicationGroupService extends AbstractService {
 
 	@GET
 	@Transactional
-	public List<SettingApplicationGroup> getApplicationGroups() {
+	public List<SettingApplicationGroup> getApplicationGroups() throws InsufficientPermissionsException {
 		ensurePermission(permissionSet.isGlobalAdmin());
 
 		return applicationGroupDao.getAllApplicationGroups();
@@ -35,7 +36,7 @@ public class ApplicationGroupService extends AbstractService {
 	@POST
 	@Path("{applicationGroup}")
 	@Transactional
-	public CreateResponse createApplicationGroup(@PathParam("applicationGroup") String applicationGroupName) {
+	public CreateResponse createApplicationGroup(@PathParam("applicationGroup") String applicationGroupName) throws InsufficientPermissionsException {
 		ensurePermission(permissionSet.isGlobalAdmin());
 
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);

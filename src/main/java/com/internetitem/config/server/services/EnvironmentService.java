@@ -6,6 +6,8 @@ import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.db.dataModel.SettingEnvironment;
 import com.internetitem.config.server.security.PermissionSet;
 import com.internetitem.config.server.services.dataModel.CreateResponse;
+import com.internetitem.config.server.services.exception.EntityNotFoundException;
+import com.internetitem.config.server.services.exception.InsufficientPermissionsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,7 @@ public class EnvironmentService extends AbstractService {
 
 	@GET
 	@Transactional
-	public List<SettingEnvironment> getEnvironments(@PathParam("applicationGroup") String applicationGroupName) {
+	public List<SettingEnvironment> getEnvironments(@PathParam("applicationGroup") String applicationGroupName) throws EntityNotFoundException, InsufficientPermissionsException {
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup == null) {
 			return notFound("Unknown Application Group");
@@ -46,7 +48,7 @@ public class EnvironmentService extends AbstractService {
 	@POST
 	@Path("{environmentName}")
 	@Transactional
-	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @PathParam("environmentName") String environmentName) {
+	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @PathParam("environmentName") String environmentName) throws InsufficientPermissionsException {
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup == null) {
 			return new CreateResponse(false, "Unknown Application Group", null);
