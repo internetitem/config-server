@@ -7,6 +7,10 @@ import java.util.Set;
 
 public class PermissionSet {
 
+	private SettingUser user;
+
+	private String hostname;
+
 	// SUPERUSER
 	private boolean globalAdmin;
 
@@ -20,7 +24,10 @@ public class PermissionSet {
 	private boolean svGlobal;
 	private Set<Long> svAppGroup;
 
-	public PermissionSet(LoggedInUserDetails permissions) {
+	public PermissionSet(LoggedInUserDetails permissions, String hostname) {
+		this.user = permissions.getUser();
+		this.hostname = hostname;
+
 		this.readApplications = new HashSet<>();
 		this.adminAppGroups = new HashSet<>();
 		this.svAppGroup = new HashSet<>();
@@ -57,5 +64,13 @@ public class PermissionSet {
 
 	public boolean canReadApplication(SettingApplicationGroup appGroup, SettingApplication app) {
 		return canSetValue(appGroup) || readApplications.contains(Long.valueOf(app.getApplicationId()));
+	}
+
+	public SettingUser getUser() {
+		return user;
+	}
+
+	public String getHostname() {
+		return hostname;
 	}
 }

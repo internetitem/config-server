@@ -14,8 +14,11 @@ public class LoggedInUserDetails extends User {
 
 	private Set<SettingPermissionGrant> grants;
 
+	private SettingUser user;
+
 	public LoggedInUserDetails(SettingUser user) {
 		super(user.getUsername(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority("User")));
+		this.user = user;
 		grants = new HashSet<>();
 		for (SettingUserGroup group : user.getGroups()) {
 			grants.addAll(group.getGrants());
@@ -24,5 +27,9 @@ public class LoggedInUserDetails extends User {
 
 	public Set<SettingPermissionGrant> getGrants() {
 		return grants;
+	}
+
+	public SettingUser getUser() {
+		return user;
 	}
 }

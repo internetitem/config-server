@@ -207,9 +207,9 @@ INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, Actio
 INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (3, 'Version');
 INSERT INTO SettingActionStructureChangeType (ActionStructureChangeTypeId, ActionStructureChangeTypeName) VALUES (4, 'Environment');
 
-CREATE SEQUENCE SeqSettingActionStructure;
+CREATE SEQUENCE SeqSettingActionStructureChange;
 CREATE TABLE SettingActionStructureChange (
-  ActionStructureChangeId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingActionStructure'),
+  ActionStructureChangeId INTEGER PRIMARY KEY DEFAULT nextval('SeqSettingActionStructureChange'),
   ActionId INTEGER NOT NULL,
   ActionStructureChangeTypeId INTEGER NOT NULL,
   ActionTypeId INTEGER NOT NULL,
@@ -225,7 +225,7 @@ CREATE TABLE SettingActionStructureChange (
   CONSTRAINT fkActionStructureChangeVersion FOREIGN KEY (VersionId) REFERENCES SettingVersion (VersionId),
   CONSTRAINT fkActionStructureChangeEnvironment FOREIGN KEY (EnvironmentId) REFERENCES settingenvironment (EnvironmentId)
 );
-ALTER SEQUENCE SeqSettingActionStructure OWNED BY SettingActionStructureChange.ActionStructureChangeId;
+ALTER SEQUENCE SeqSettingActionStructureChange OWNED BY SettingActionStructureChange.ActionStructureChangeId;
 
 CREATE TABLE SchemaVersion (
 	SchemaType VARCHAR(50) NOT NULL PRIMARY KEY,
