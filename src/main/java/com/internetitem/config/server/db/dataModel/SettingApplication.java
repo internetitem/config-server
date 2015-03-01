@@ -1,7 +1,9 @@
 package com.internetitem.config.server.db.dataModel;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "SettingApplication")

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -51,17 +50,17 @@ public class EnvironmentService extends AbstractService {
 	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @PathParam("environmentName") String environmentName) throws InsufficientPermissionsException {
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup == null) {
-			return new CreateResponse(false, "Unknown Application Group", null);
+			return new CreateResponse("Unknown Application Group");
 		}
 
 		ensurePermission(permissionSet.canAdminAppGroup(appGroup));
 
 		SettingEnvironment oldEnvironment = environmentDao.getEnvironmentByName(appGroup, environmentName);
 		if (oldEnvironment != null) {
-			return new CreateResponse(false, "Environment already exists", null);
+			return new CreateResponse("Environment already exists");
 		}
 
 		SettingEnvironment env = environmentDao.createEnvironment(appGroup, environmentName);
-		return new CreateResponse(true, "Created Environment " + environmentName, Long.valueOf(env.getEnvironmentId()));
+		return new CreateResponse("Created Environment " + environmentName, env.getEnvironmentId());
 	}
 }

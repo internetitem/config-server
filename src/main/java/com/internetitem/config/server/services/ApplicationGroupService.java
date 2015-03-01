@@ -41,11 +41,11 @@ public class ApplicationGroupService extends AbstractService {
 
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup != null) {
-			return new CreateResponse(false, "Application Group already exists", null);
+			return new CreateResponse("Application Group already exists");
 		}
 
 		appGroup = applicationGroupDao.createApplicationGroup(applicationGroupName);
-		return new CreateResponse(true, "Created Application Group " + applicationGroupName, Long.valueOf(appGroup.getApplicationGroupId()));
+		return new CreateResponse("Created Application Group " + applicationGroupName, appGroup.getApplicationGroupId());
 	}
 
 }
