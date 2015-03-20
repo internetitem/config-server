@@ -8,18 +8,19 @@ import com.internetitem.config.server.db.dataModel.SettingActionType;
 import com.internetitem.config.server.db.dataModel.SettingApplicationGroup;
 import com.internetitem.config.server.db.dataModel.SettingEnvironment;
 import com.internetitem.config.server.security.PermissionSet;
-import com.internetitem.config.server.services.dataModel.CreateResponse;
+import com.internetitem.config.server.services.dataModel.request.CreateRequest;
+import com.internetitem.config.server.services.dataModel.response.CreateResponse;
 import com.internetitem.config.server.services.exception.EntityNotFoundException;
 import com.internetitem.config.server.services.exception.InsufficientPermissionsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -51,16 +52,17 @@ public class EnvironmentService extends AbstractService {
 		return environmentDao.getAllEnvironments(appGroup);
 	}
 
-	@POST
-	@Path("{environmentName}")
+	@PUT
 	@Transactional
-	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @PathParam("environmentName") String environmentName) throws InsufficientPermissionsException {
+	public CreateResponse createEnvironment(@PathParam("applicationGroup") String applicationGroupName, @NotNull CreateRequest request) throws InsufficientPermissionsException {
 		SettingApplicationGroup appGroup = applicationGroupDao.getApplicationGroupByName(applicationGroupName);
 		if (appGroup == null) {
 			return new CreateResponse("Unknown Application Group");
 		}
 
 		ensurePermission(permissionSet.canAdminAppGroup(appGroup));
+
+		String environmentName = request.getName();
 
 		SettingEnvironment oldEnvironment = environmentDao.getEnvironmentByName(appGroup, environmentName);
 		if (oldEnvironment != null) {

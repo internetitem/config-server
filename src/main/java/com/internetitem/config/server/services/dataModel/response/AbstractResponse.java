@@ -1,4 +1,4 @@
-package com.internetitem.config.server.services.dataModel;
+package com.internetitem.config.server.services.dataModel.response;
 
 public abstract class AbstractResponse {
     

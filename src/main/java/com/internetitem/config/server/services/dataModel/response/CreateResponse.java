@@ -1,4 +1,4 @@
-package com.internetitem.config.server.services.dataModel;
+package com.internetitem.config.server.services.dataModel.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

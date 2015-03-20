@@ -1,6 +1,6 @@
 package com.internetitem.config.server.services.provider;
 
-import com.internetitem.config.server.services.dataModel.ErrorResponse;
+import com.internetitem.config.server.services.dataModel.response.ErrorResponse;
 import com.internetitem.config.server.services.exception.EntityNotFoundException;
 import com.internetitem.config.server.services.exception.InsufficientPermissionsException;
 import com.internetitem.config.server.services.exception.SettingApplicationException;
