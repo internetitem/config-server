@@ -5,6 +5,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SettingComponent")
+@NamedQueries({
+		@NamedQuery(name = "Component.fetchByName", query = "SELECT c FROM SettingComponent c WHERE c.componentName = :componentName and c.applicationGroup = :applicationGroup"),
+		@NamedQuery(name = "Component.fetchAll", query = "SELECT c FROM SettingComponent c WHERE c.applicationGroup = :applicationGroup")
+})
 public class SettingComponent {
 
 	@Id
@@ -88,9 +92,7 @@ public class SettingComponent {
 
 		SettingComponent that = (SettingComponent) o;
 
-		if (componentId != that.componentId) return false;
-
-		return true;
+		return componentId == that.componentId;
 	}
 
 	@Override
